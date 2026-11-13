@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Зарезервированная страница</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f7f4ff;
+        --bg-accent: #efe7ff;
+        --text: #2f1a66;
+        --card: #ffffff;
+        --shadow: rgba(79, 42, 153, 0.18);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #160709;
+          --bg-accent: #270d11;
+          --text: #ffd8db;
+          --card: #3a1218;
+          --shadow: rgba(0, 0, 0, 0.45);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: "Segoe UI", Roboto, sans-serif;
+        background: radial-gradient(circle at top, var(--bg-accent), var(--bg));
+        color: var(--text);
+      }
+
+      .card {
+        width: min(92vw, 720px);
+        padding: clamp(1.75rem, 4vw, 3rem);
+        border-radius: 22px;
+        background: var(--card);
+        text-align: center;
+        box-shadow: 0 20px 48px var(--shadow);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.6rem, 3.8vw, 2.5rem);
+        line-height: 1.2;
+        letter-spacing: 0.02em;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Страница зарезервирована для Госпожи Луки</h1>
+    </main>
+  </body>
+</html>
