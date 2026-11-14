@@ -187,7 +187,7 @@
         }
         .experience.is-entered .main__video {
             transform: scale(1);
-            filter: blur(15px);
+            filter: blur(5px);
         }
         /* Uniform 40% black overlay; the main-screen decorative vignette remains separate. */
         .main__shade {
@@ -317,5 +317,5 @@
             .word-stage { transform: none !important; }
             .reveal-flare { display: none; }
             .main__video-drift { transform: none !important; will-change: auto; }
-            .main__video { filter: blur(15px) !important; transform: none !important; }
+            .main__video { filter: blur(5px) !important; transform: none !important; }
         }

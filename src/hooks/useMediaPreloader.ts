@@ -6,10 +6,11 @@ import type { AudioEngine, SoundName } from '../types';
 type Resource = SoundName | 'fonts' | 'video';
 
 const WEIGHTS: Record<Resource, number> = {
-  heart: 0.35,
-  bg: 0.33,
-  fonts: 0.12,
-  video: 0.20,
+  heart: 0.25,
+  start: 0.25,
+  loop: 0.25,
+  fonts: 0.10,
+  video: 0.15,
 };
 
 interface WebkitAudioWindow extends Window {
@@ -19,7 +20,7 @@ interface WebkitAudioWindow extends Window {
 export function useMediaPreloader(videoRef: RefObject<HTMLVideoElement | null>) {
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
-  const audioRef = useRef<AudioEngine>({ context: null, buffers: {}, musicSource: null });
+  const audioRef = useRef<AudioEngine>({ context: null, buffers: {} });
 
   useEffect(() => {
     let cancelled = false;
@@ -27,7 +28,7 @@ export function useMediaPreloader(videoRef: RefObject<HTMLVideoElement | null>) 
     let progressTarget = 0;
     let progressDisplayed = 0;
     let tasksCompleted = false;
-    const resources: Record<Resource, number> = { heart: 0, bg: 0, fonts: 0, video: 0 };
+    const resources: Record<Resource, number> = { heart: 0, start: 0, loop: 0, fonts: 0, video: 0 };
     const controller = new AbortController();
 
     const AudioContextConstructor = window.AudioContext ||
@@ -42,7 +43,7 @@ export function useMediaPreloader(videoRef: RefObject<HTMLVideoElement | null>) 
       console.warn('[LUKA] AudioContext недоступен:', error);
     }
 
-    audioRef.current = { context, buffers: {}, musicSource: null };
+    audioRef.current = { context, buffers: {} };
 
     function updateResource(resource: Resource, amount: number) {
       if (cancelled) return;
@@ -179,7 +180,8 @@ export function useMediaPreloader(videoRef: RefObject<HTMLVideoElement | null>) 
 
     void Promise.all([
       loadSound('heart', ['assets/audio/heart.mp3']),
-      loadSound('bg', ['assets/audio/bg.ogg', 'assets/audio/bg.mp3']),
+      loadSound('start', ['assets/audio/start.ogg']),
+      loadSound('loop', ['assets/audio/loop.ogg']),
       loadFonts(),
       loadVideo(),
     ]).finally(() => {

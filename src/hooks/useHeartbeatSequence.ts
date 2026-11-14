@@ -79,17 +79,44 @@ export function useHeartbeatSequence({
             source.stop(ending);
           }
 
-          const music = buffers.bg;
-          if (music) {
-            const source = context.createBufferSource();
-            const volume = context.createGain();
-            source.buffer = music;
-            source.loop = true;
-            volume.gain.setValueAtTime(0, startAt);
-            volume.gain.linearRampToValueAtTime(0.34, startAt + REVEAL_AT + 1.8);
-            source.connect(volume).connect(context.destination);
-            source.start(startAt);
-            audioRef.current.musicSource = source;
+          // start.ogg and the heartbeat share the exact same AudioContext start time.
+          const introMusic = buffers.start;
+          const loopMusic = buffers.loop;
+
+          if (introMusic) {
+            const introSource = context.createBufferSource();
+            const introVolume = context.createGain();
+            introSource.buffer = introMusic;
+            introSource.loop = false;
+            introVolume.gain.setValueAtTime(0.34, startAt);
+            introSource.connect(introVolume).connect(context.destination);
+            introSource.start(startAt);
+
+            // Schedule the loop before playback begins: it starts on the exact
+            // decoded end time of start.ogg, with no JS onended timing gap or fade.
+            if (loopMusic) {
+              const loopSource = context.createBufferSource();
+              const loopVolume = context.createGain();
+              const loopAt = startAt + introMusic.duration;
+              loopSource.buffer = loopMusic;
+              loopSource.loop = true;
+              loopSource.loopStart = 0;
+              loopSource.loopEnd = loopMusic.duration;
+              loopVolume.gain.setValueAtTime(0.34, loopAt);
+              loopSource.connect(loopVolume).connect(context.destination);
+              loopSource.start(loopAt);
+            }
+          } else if (loopMusic) {
+            // If start.ogg is unavailable, keep the ambience working.
+            const loopSource = context.createBufferSource();
+            const loopVolume = context.createGain();
+            loopSource.buffer = loopMusic;
+            loopSource.loop = true;
+            loopSource.loopStart = 0;
+            loopSource.loopEnd = loopMusic.duration;
+            loopVolume.gain.setValueAtTime(0.34, startAt);
+            loopSource.connect(loopVolume).connect(context.destination);
+            loopSource.start(startAt);
           }
         } catch (error) {
           console.warn('[LUKA] Ошибка аудиосцены:', error);
